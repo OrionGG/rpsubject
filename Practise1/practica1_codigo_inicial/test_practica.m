@@ -60,15 +60,15 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
    % Pruebas con K-NN
    %------------------------------------------------------------------------
    subplot(2, 2, 2);
-   CLASIFICADOR_KNN = entrenar_clasificador_knn(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, VALORES_K_EN_KNN);
-   dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
+   %CLASIFICADOR_KNN = entrenar_clasificador_knn(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, VALORES_K_EN_KNN);
+   %dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
    % FALTA: calcular error de clasificación y matriz de confusión
 % 
 %   %------------------------------------------------------------------------
 %   % Pruebas con histogramas 2-D
 %   %------------------------------------------------------------------------
 %   subplot(2, 2, 3);
-%   CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, DIVISIONES_HISTOGRAMA);
+   CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, DIVISIONES_HISTOGRAMA);
 %   dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_HIST, @clasificar_hist2D, sprintf('Hist - %d datos', NUM_DATOS_ENTRENA_POR_CLASE(i)));
 %  % FALTA: calcular error de clasificación y matriz de confusión
 

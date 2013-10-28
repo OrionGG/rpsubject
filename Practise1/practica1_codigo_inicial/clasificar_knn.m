@@ -7,6 +7,7 @@ function prediccion = clasificar_knn( X, CLASIFICADOR_KNN )
     INDICES = zeros(NUMCLASES, lengthDatosClase);
     for i = 1:NUMCLASES
         DATOSCLASE = CLASIFICADOR_KNN.DATOS(CLASIFICADOR_KNN.ETIQUETAS == i,:);
+        %usar todos los datos del clasificador para clasificar
         INDICES(i,:) = 1:length(DATOSCLASE);
     end;
     

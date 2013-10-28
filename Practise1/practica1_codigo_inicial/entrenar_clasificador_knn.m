@@ -31,6 +31,7 @@ for ki=1:length(VALORES_K_EN_KNN)
         testIndexes = zeros(NUM_CLASES, lengthMeanByClassByFold);
         trainIndexes = zeros(NUM_CLASES, lengthMeanByClass - lengthMeanByClassByFold);
         
+        %Generación de indices de entrenamiento y test
         for i=1:NUM_CLASES
             DATOSCLASE = DATOS(ETIQUETAS==i,:); 
             
@@ -45,11 +46,11 @@ for ki=1:length(VALORES_K_EN_KNN)
              
             DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
         end;
-        
-           
+                
+        %Evaluar los datos de test   
         for i=1:NUM_CLASES
             DATOSCLASE = DATOS(ETIQUETAS==i,:); 
-            NUMTESTDATACLASS = size(testIndexes(i,:),2);
+            NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
                 INDICES = trainIndexes;
