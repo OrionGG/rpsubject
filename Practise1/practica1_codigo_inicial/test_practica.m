@@ -14,7 +14,8 @@ CONJUNTO_GAUSSIANAS = 1;
 NUM_DATOS_ENTRENA_POR_CLASE   = [50, 200, 1000];
 NUM_DATOS_TEST_POR_CLASE      = 100;
 VALORES_K_EN_KNN              = [1, 5, 11, 21, 31];
-DIVISIONES_HISTOGRAMA         = [3, 5, 10, 20, 30];
+%DIVISIONES_HISTOGRAMA         = [3, 5, 10, 20, 30];
+DIVISIONES_HISTOGRAMA         = 1:35;
 
 %--------------------------------------------------------------------------
 % Establecer las distribuciones gaussianas
@@ -59,7 +60,7 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
    %------------------------------------------------------------------------
    % Pruebas con K-NN
    %------------------------------------------------------------------------
-   subplot(2, 2, 2);
+   %subplot(2, 2, 2);
    %CLASIFICADOR_KNN = entrenar_clasificador_knn(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, VALORES_K_EN_KNN);
    %dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
    % FALTA: calcular error de clasificación y matriz de confusión
@@ -67,9 +68,9 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
 %   %------------------------------------------------------------------------
 %   % Pruebas con histogramas 2-D
 %   %------------------------------------------------------------------------
-%   subplot(2, 2, 3);
+   subplot(2, 2, 3);
    CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, DIVISIONES_HISTOGRAMA);
-%   dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_HIST, @clasificar_hist2D, sprintf('Hist - %d datos', NUM_DATOS_ENTRENA_POR_CLASE(i)));
+   dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_HIST, @clasificar_hist2D, sprintf('Hist - %d datos - N = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_HIST.NOPTIMA));
 %  % FALTA: calcular error de clasificación y matriz de confusión
 
   %------------------------------------------------------------------------
