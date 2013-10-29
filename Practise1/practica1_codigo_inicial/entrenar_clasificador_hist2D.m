@@ -55,48 +55,8 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
             DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
         end;
         
-        %Crear histograma de los datos de entrenamiento
-        histClase(:,:,3) = zeros(N,N);%histogramas por clase
-        minvalue = 1;
-        maxvalue = N;
-        for i=1:NUM_CLASES
-            DATOSCLASE = DATOS(ETIQUETAS==i,:);
-            DATOSPORCLASE = length(DATOSCLASE);
-            for ixTrainDataClass = 1: length(trainIndexes)
-                DATO = DATOSCLASE(trainIndexes(i, ixTrainDataClass),:);
-                xn = floor(DATO(1)/(DATOSPORCLASE/N))+1;
-                if(xn < minvalue)
-                    xn = 1;
-                else if(xn > maxvalue)
-                        xn = maxvalue;
-                    end;end;
-                
-                yn = floor(DATO(2)/(DATOSPORCLASE/N))+1;
-                if(yn < minvalue)
-                    yn = 1;
-                else if(yn > maxvalue)
-                        yn = maxvalue;
-                    end;end;
-                
-                histClase(xn,yn,i)=histClase(xn,yn,i)+1;
-            end;
-            
-            DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
-        end;
-        hist=zeros(N,N);%histograma de etiquetas usando los apriori
-        for ii=1:size(hist,1)
-            for jj = 1:size(hist,2)
-                maxEtiqueta = 0;
-                maxValue = -1;
-                for ixClase = 1:size(histClase,3)
-                    if(maxValue < (histClase(ii,jj,ixClase)*aprioris(ixClase)))
-                        maxEtiqueta = ixClase;
-                        maxValue = histClase(ii,jj,ixClase)*aprioris(ixClase);
-                    end;
-                end;
-                hist(ii,jj) = maxEtiqueta;
-            end;
-        end;
+        %crear el histogroama de etiquetas
+        hist = crearHistEtiquetas(DATOS,  ETIQUETAS, trainIndexes);
         
         %Evaluar los datos de test
         for i=1:NUM_CLASES
@@ -104,7 +64,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
             NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
-                LABEL = histograma_N(DATOENTRADA, DATOS, ETIQUETAS, hist,N);
+                LABEL = histograma_N(DATOENTRADA, hist,N);
                 nTrue = nTrue + (LABEL == i);
             end;
             DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
@@ -118,8 +78,18 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
 end;
 [mKPerc, nKPerc] = max(KPERCENTAGES(:,1));
 
+
+%crear el histogroama de etiquetas par todos los datos
+TODOSLOSINDICES = zeros(NUMCLASES, lengthDatosClase);
+for i = 1:NUMCLASES        
+    DATOSCLASE = CLASIFICADOR_KNN.DATOS(CLASIFICADOR_KNN.ETIQUETAS == i,:);
+    %usar todos los datos del clasificador para crear el histograma
+    TODOSLOSINDICES(i,:) = 1:length(DATOSCLASE);
+end;
+hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES);
+
 %Crear histograma con todos los datos
-CLASIFICADOR_HIST{1}.hist = 0;
+CLASIFICADOR_HIST.hist = hist;
 CLASIFICADOR_HIST{1}{1}.binsize = 0;
 CLASIFICADOR_HIST{1,1}.minbin = 0;
 CLASIFICADOR_HIST{1,1}.maxbin = 0;
