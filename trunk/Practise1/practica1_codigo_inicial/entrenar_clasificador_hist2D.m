@@ -56,11 +56,12 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
         end;
         
         %crear el histogroama de etiquetas
-        hist = crearHistEtiquetas(DATOS,  ETIQUETAS, trainIndexes);
+        hist = crearHistEtiquetas(DATOS,  ETIQUETAS, trainIndexes, N, aprioris);
         
         %Evaluar los datos de test
         for i=1:NUM_CLASES
             DATOSCLASE = DATOS(ETIQUETAS==i,:);
+            DATOSPORCLASE = length(DATOSCLASE);
             NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
@@ -77,7 +78,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
     KPERCENTAGES(ni,:) = [MEANPERCENTAGE, N];
 end;
 [mKPerc, nKPerc] = max(KPERCENTAGES(:,1));
-
+CLASIFICADOR_KNN.NOPTIMA = KPERCENTAGES(nKPerc,2);
 
 %crear el histogroama de etiquetas par todos los datos
 TODOSLOSINDICES = zeros(NUMCLASES, lengthDatosClase);
@@ -86,7 +87,7 @@ for i = 1:NUMCLASES
     %usar todos los datos del clasificador para crear el histograma
     TODOSLOSINDICES(i,:) = 1:length(DATOSCLASE);
 end;
-hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES);
+hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES, CLASIFICADOR_KNN.NOPTIMA, aprioris);
 
 %Crear histograma con todos los datos
 CLASIFICADOR_HIST.hist = hist;

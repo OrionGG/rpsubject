@@ -1,4 +1,4 @@
-function hist = crearHistEtiquetas( DATOS,  ETIQUETAS, trainIndexes)
+function hist = crearHistEtiquetas( DATOS,  ETIQUETAS, trainIndexes, N, aprioris)
 %CREARHISTETIQUETAS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,6 +6,10 @@ function hist = crearHistEtiquetas( DATOS,  ETIQUETAS, trainIndexes)
 histClase(:,:,3) = zeros(N,N);%histogramas por clase
 minvalue = 1;
 maxvalue = N;
+
+YY         = unique(ETIQUETAS);
+NUM_CLASES = length(YY);
+
 for i=1:NUM_CLASES
     DATOSCLASE = DATOS(ETIQUETAS==i,:);
     DATOSPORCLASE = length(DATOSCLASE);
