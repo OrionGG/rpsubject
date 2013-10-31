@@ -61,12 +61,12 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
         %Evaluar los datos de test
         for i=1:NUM_CLASES
             DATOSCLASE = DATOS(ETIQUETAS==i,:);
-            DATOSPORCLASE = length(DATOSCLASE);
+            
             NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
-                histsize.minbin = 0;
-                histsize.maxbin = DATOSPORCLASE;
+                histsize.minvalue = 0;
+                histsize.maxvalue = 50;
                 LABEL = histograma_N(DATOENTRADA, hist,N, histsize);
                 nTrue = nTrue + (LABEL == i);
             end;
@@ -79,7 +79,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
     MEANPERCENTAGE = mean(PERCENTAGES);
     NPERCENTAGES(ni,:) = [MEANPERCENTAGE, N];
 end;
-plot(NPERCENTAGES(:,1));
+%plot(NPERCENTAGES(:,1));
 [mNPerc, nNPerc] = max(NPERCENTAGES(:,1));
 CLASIFICADOR_HIST.NOPTIMA = NPERCENTAGES(nNPerc,2);
 
@@ -95,8 +95,8 @@ hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES, CLASIFICADOR_HIST.
 
 %Crear histograma con todos los datos
 CLASIFICADOR_HIST.hist = hist;
-CLASIFICADOR_HIST.HISTSIZE.minbin = 0;
-CLASIFICADOR_HIST.HISTSIZE.maxbin = length(DATOSCLASE);
+CLASIFICADOR_HIST.HISTSIZE.minvalue = 0;
+CLASIFICADOR_HIST.HISTSIZE.maxvalue = 50;
 
 %CLASIFICADOR_HIST{1}.binsize = 0;
 %CLASIFICADOR_HIST{1}.minbin = 0;

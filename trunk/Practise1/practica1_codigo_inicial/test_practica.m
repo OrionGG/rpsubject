@@ -15,7 +15,7 @@ NUM_DATOS_ENTRENA_POR_CLASE   = [50, 200, 1000];
 NUM_DATOS_TEST_POR_CLASE      = 100;
 VALORES_K_EN_KNN              = [1, 5, 11, 21, 31];
 %DIVISIONES_HISTOGRAMA         = [3, 5, 10, 20, 30];
-DIVISIONES_HISTOGRAMA         = 1:35;
+DIVISIONES_HISTOGRAMA         = 2:35;
 
 %--------------------------------------------------------------------------
 % Establecer las distribuciones gaussianas
