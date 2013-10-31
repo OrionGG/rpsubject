@@ -3,28 +3,28 @@ function LABEL = histograma_N( DATOENTRADA,hist,N,histsize)
 %   Detailed explanation goes here
 % Funcion que dado un histograma de etiquetas y un dato de entrada
 % devuelve la etiqueta que le corresponde dependiendo de N
-rangobin = histsize.maxbin - histsize.minbin;
-minvalue = 0;
-maxvalue = 50;
+
+minvalue = histsize.minvalue;
+maxvalue = histsize.maxvalue;
 rangobin = maxvalue - minvalue;
 
 x = DATOENTRADA(1);
-if(x < minvalue)
+if(x <= minvalue)
     xn = 1;
 else if(x >= maxvalue)
         xn = N;
     else
-        xn = floor(x/(rangobin/N))+1;
+        xn = ceil(x/(rangobin/N));
     end;
 end;
 
 y = DATOENTRADA(2);
-if(y < minvalue)
+if(y <= minvalue)
     yn = 1;
-else if(y >= maxvalue)
+else if(y > maxvalue)
         yn = N;
     else
-        yn = floor(y/(rangobin/N))+1;
+        yn = ceil(y/(rangobin/N));
     end;
 end;
 
