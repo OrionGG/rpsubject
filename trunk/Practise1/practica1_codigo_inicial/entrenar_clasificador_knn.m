@@ -16,7 +16,7 @@ for ki=1:length(VALORES_K_EN_KNN)
     
     nTrue = 0;
     
-    %%ordenamos los datos aleatoriamente para hacer el n-fold
+    %escogemos los datos aleatoriamente para hacer el n-fold
     randpermClases = zeros(NUM_CLASES,length(DATOS)/NUM_CLASES);
     for i=1:NUM_CLASES
         DATOSCLASE = DATOS(ETIQUETAS==i,:);
@@ -66,6 +66,7 @@ for ki=1:length(VALORES_K_EN_KNN)
     MEANPERCENTAGE = mean(PERCENTAGES);
     KPERCENTAGES(ki,:) = [MEANPERCENTAGE, kvalue];
 end;
+KPERCENTAGES
 [mKPerc, nKPerc] = max(KPERCENTAGES(:,1));
 CLASIFICADOR_KNN.KOPTIMA = KPERCENTAGES(nKPerc,2);
 CLASIFICADOR_KNN.DATOS = DATOS;

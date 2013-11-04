@@ -7,7 +7,7 @@ NUM_CLASES = length(YY);
 
 NFOLD = 5;
 
-NPERCENTAGES = zeros(length(DIVISIONES_HISTOGRAMA),2);;
+NPERCENTAGES = zeros(length(DIVISIONES_HISTOGRAMA),2);
 PERCENTAGES = zeros(1,NFOLD);
 
 aprioris = zeros(1,length(unique(ETIQUETAS)));
@@ -22,7 +22,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
     
     nTrue = 0;
     
-    %%ordenamos los datos aleatoriamente para hacer el n-fold
+    %escogemos los datos aleatoriamente para hacer el n-fold
     randpermClases = zeros(NUM_CLASES,length(DATOS)/NUM_CLASES);
     for i=1:NUM_CLASES
         DATOSCLASE = DATOS(ETIQUETAS==i,:);
@@ -80,6 +80,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
     NPERCENTAGES(ni,:) = [MEANPERCENTAGE, N];
 end;
 %plot(NPERCENTAGES(:,1));
+NPERCENTAGES
 [mNPerc, nNPerc] = max(NPERCENTAGES(:,1));
 CLASIFICADOR_HIST.NOPTIMA = NPERCENTAGES(nNPerc,2);
 
