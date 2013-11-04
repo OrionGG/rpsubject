@@ -1,6 +1,6 @@
 function prediccion = clasificar_hist2D( X, CLASIFICADOR_HIST )
-%CLASIFICAR_HIST2D Summary of this function goes here
-%   Detailed explanation goes here
+% X, es un vector de características
+% CLASIFICADOR_HIST el histograma de etiquetas junto con los margenes
 DATOENTRADA = X';
 prediccion = histograma_N(DATOENTRADA, CLASIFICADOR_HIST.hist,CLASIFICADOR_HIST.NOPTIMA, CLASIFICADOR_HIST.HISTSIZE);
 

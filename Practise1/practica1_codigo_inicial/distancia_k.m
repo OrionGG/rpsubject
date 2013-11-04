@@ -1,6 +1,9 @@
 function LABEL = distancia_k(DATOENTRADA, DATOS, ETIQUETAS, INDICES, kvalue )
 %DISTANCIA_K Summary of this function goes here
 %   Detailed explanation goes here
+%   Dado un dato de entrada, una kvalue dada y sea INDICES el cojnunto de
+%   indices de la lista de datos que usaremos para etiquetar el dato de
+%   entrada se devuelve la etiqueta de los kvalue vecinos mas cercanos
 
 [r, c] = size(INDICES);
 

@@ -1,6 +1,7 @@
 function prediccion = clasificar_knn( X, CLASIFICADOR_KNN )
-%CLASIFICAR_KNN Summary of this function goes here
-%   Detailed explanation goes here
+% X, es un vector de características
+% CLASIFICADOR_KNN el valor del k optimo para clasificar junto con el
+% conjunto de datos y etiquetas de entrenamiento
     DATOENTRADA = X';
     NUMCLASES = length(unique(CLASIFICADOR_KNN.ETIQUETAS));
     lengthDatosClase = length(CLASIFICADOR_KNN.DATOS)/NUMCLASES;
