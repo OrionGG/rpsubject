@@ -8,6 +8,7 @@ minvalue = histsize.minvalue;
 maxvalue = histsize.maxvalue;
 rangobin = maxvalue - minvalue;
 
+%menores del minimo se ponen en el primer rango y mayores en el último
 x = DATOENTRADA(1);
 if(x <= minvalue)
     xn = 1;
@@ -18,6 +19,7 @@ else if(x >= maxvalue)
     end;
 end;
 
+%menores del minimo se ponen en el primer rango y mayores en el último
 y = DATOENTRADA(2);
 if(y <= minvalue)
     yn = 1;

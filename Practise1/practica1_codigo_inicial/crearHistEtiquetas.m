@@ -19,6 +19,7 @@ for i=1:NUM_CLASES
         DATOENTRADA = DATOSCLASE(trainIndexes(i, ixTrainDataClass),:);
         
         x = DATOENTRADA(1);
+        %menores del minimo se ponen en el primer rango y mayores en el último
         if(x <= minvalue)
             xn = 1;
         else if(x > maxvalue)
@@ -28,6 +29,7 @@ for i=1:NUM_CLASES
             end;
         end;
         
+        %menores del minimo se ponen en el primer rango y mayores en el último
         y = DATOENTRADA(2);
         if(y <= minvalue)
             yn = 1;
