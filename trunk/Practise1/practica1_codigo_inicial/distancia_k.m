@@ -22,9 +22,15 @@ end;
 [m, n] = sort(dist);
 NEIGHBOURS = n(1:kvalue);
 [a,b]=hist(ETIQUETAS(NEIGHBOURS),unique(ETIQUETAS(NEIGHBOURS)));
-% Devolvemos la etiqueta de la clase con mayor cuenta
-[mMax, nMax] = max(a);
-LABEL = b(nMax);
+histSort = sort(a,'descend');
+if(1 < length(histSort) && histSort(1) == histSort(2))
+    % En caso de empate nos quedamos con la etiqueta de menor distancia
+    LABEL = ETIQUETAS(NEIGHBOURS(1));
+else
+    % Devolvemos la etiqueta de la clase con mayor cuenta
+    [mMax, nMax] = max(a);
+    LABEL = b(nMax);
+end;
 
 end
 
