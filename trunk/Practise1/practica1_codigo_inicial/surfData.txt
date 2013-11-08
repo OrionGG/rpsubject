@@ -1,0 +1,22 @@
+
+for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
+    
+    figure;
+    YY         = unique(ETIQUETAS_ENTRENA{i});
+    NUM_CLASES = length(YY);
+    for j= 1:NUM_CLASES
+        
+        DATOSCLASE = DATOS_ENTRENA{i}(ETIQUETAS_ENTRENA{i}==j,:);
+        x = DATOSCLASE(:,1); y = DATOSCLASE(:,2); z = ETIQUETAS_ENTRENA{i}(ETIQUETAS_ENTRENA{i}==j,:);
+        [xq,yq] = meshgrid(-5:.5:55, -5:.5:55);
+        zq = griddata(x,y,z,xq,yq);
+        hSurface = surf(xq,yq,zq);
+        color    = COLORES_CLASES{j};
+        r        = color(1)/255;
+        g        = color(2)/255;
+        b        = color(3)/255;
+        set(hSurface,'FaceColor',[r, g, b],'FaceAlpha',0.5);
+        hold on;
+    end;
+end;
+hold off
