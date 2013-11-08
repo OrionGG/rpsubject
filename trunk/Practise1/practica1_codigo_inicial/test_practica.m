@@ -13,7 +13,7 @@ CONJUNTO_GAUSSIANAS = 1;
 
 NUM_DATOS_ENTRENA_POR_CLASE   = [50, 200, 1000];
 NUM_DATOS_TEST_POR_CLASE      = 100;
-VALORES_H_EN_PARZEN           = 0.5:0.5:20;
+VALORES_H_EN_PARZEN           = 0.2:0.2:2;
 %VALORES_K_EN_KNN              = [1, 5, 11, 21, 31];
 VALORES_K_EN_KNN              = [1, 3, 5, 7, 11, 13, 17, 19, 21, 23, 29, 31];
 %DIVISIONES_HISTOGRAMA         = [3, 5, 10, 20, 30];
@@ -70,7 +70,7 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
     CLASIFICADOR_PARZEN = entrenar_clasificador_Parzen(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, VALORES_H_EN_PARZEN);
     figure(nfigure);
     subplot(2, 3, 2);
-    ETIQUETAS_PARZEN = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_PARZEN, @clasificar_Parzen, sprintf('PARZEN - %d datos - H = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_PARZEN.HOPTIMA));
+    ETIQUETAS_PARZEN = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_PARZEN, @clasificar_Parzen, sprintf('PARZEN - %d datos - H = %0.3g', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_PARZEN.HOPTIMA));
     [Error_PARZEN, MatrizConfusion_PARZEN] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_PARZEN);
     toc
     Error_PARZEN
