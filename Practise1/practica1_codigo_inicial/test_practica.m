@@ -17,6 +17,8 @@ NUM_DATOS_TEST_POR_CLASE      = 100;
 VALORES_K_EN_KNN              = [1, 3, 5, 7, 11, 13, 17, 19, 21, 23, 29, 31];
 %DIVISIONES_HISTOGRAMA         = [3, 5, 10, 20, 30];
 DIVISIONES_HISTOGRAMA         = 3:30;
+HISTSIZE.minvalue             = 0;
+HISTSIZE.maxvalue             = D;
 
 %--------------------------------------------------------------------------
 % Establecer las distribuciones gaussianas
@@ -63,10 +65,10 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
     %------------------------------------------------------------------------
     % Pruebas con K-NN
     %------------------------------------------------------------------------
-    figure(nfigure);
-    subplot(2, 2, 2);
     tic
     CLASIFICADOR_KNN = entrenar_clasificador_knn(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, VALORES_K_EN_KNN);
+    figure(nfigure);
+    subplot(2, 2, 2);
     ETIQUETAS_KNN = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
     [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_KNN);
     toc
@@ -78,10 +80,10 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
     %   %------------------------------------------------------------------------
     %   % Pruebas con histogramas 2-D
     %   %------------------------------------------------------------------------
+    tic
+    CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, DIVISIONES_HISTOGRAMA, HISTSIZE);
     figure(nfigure);
     subplot(2, 2, 3);
-    tic
-    CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, DIVISIONES_HISTOGRAMA);
     ETIQUETAS_HIST = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_HIST, @clasificar_hist2D, sprintf('Hist - %d datos - N = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_HIST.NOPTIMA));
     [Error_HIST, MatrizConfusion_HIST] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_HIST);
     toc
@@ -94,10 +96,10 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
     %------------------------------------------------------------------------
     % Pruebas con Gaussianas cov completa.
     %------------------------------------------------------------------------
-    figure(nfigure);
-    subplot(2, 2, 4);
     tic
     CLASIFICADOR_GAUSS = entrenar_clasificador_gaussianas(DATOS_ENTRENA{i}, ETIQUETAS_ENTRENA{i}, 1);
+    figure(nfigure);
+    subplot(2, 2, 4);
     ETIQUETAS_GAUSS = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_GAUSS, @clasificar_gaussianas, sprintf('Gauss - %d datos', NUM_DATOS_ENTRENA_POR_CLASE(i)));
     [Error_GAUSS, MatrizConfusion_GAUSS] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_GAUSS);
     toc

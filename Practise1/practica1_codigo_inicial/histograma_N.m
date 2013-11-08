@@ -1,11 +1,11 @@
-function LABEL = histograma_N( DATOENTRADA,hist,N,histsize)
+function LABEL = histograma_N( DATOENTRADA,hist,N,HISTSIZE)
 %HISTOGRAMA_N Summary of this function goes here
 %   Detailed explanation goes here
 % Funcion que dado un histograma de etiquetas y un dato de entrada
 % devuelve la etiqueta que le corresponde dependiendo de N
 
-minvalue = histsize.minvalue;
-maxvalue = histsize.maxvalue;
+minvalue = HISTSIZE.minvalue;
+maxvalue = HISTSIZE.maxvalue;
 rangobin = maxvalue - minvalue;
 
 %menores del minimo se ponen en el primer rango y mayores en el último
