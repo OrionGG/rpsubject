@@ -1,6 +1,8 @@
 function CLASIFICADOR_KNN = entrenar_clasificador_knn(DATOS, ETIQUETAS, VALORES_K_EN_KNN)
 %ENTRENAR_CLASIFICADOR_KNN Summary of this function goes here
 %   Detailed explanation goes here
+% Entrena un clasificador KNN con los datos de entrenamiento con el
+% objetivo de obtener el k que nos da mejor rendimiento
 
 
 YY         = unique(ETIQUETAS);
@@ -8,7 +10,7 @@ NUM_CLASES = length(YY);
 
 NFOLD = 5;
 
-KPERCENTAGES = zeros(length(VALORES_K_EN_KNN),2);;
+KPERCENTAGES = zeros(length(VALORES_K_EN_KNN),2);
 PERCENTAGES = zeros(1,NFOLD);
 
 for ki=1:length(VALORES_K_EN_KNN)
@@ -54,7 +56,9 @@ for ki=1:length(VALORES_K_EN_KNN)
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
                 INDICES = trainIndexes;
+                %devolvemos la equiqueta de los kvalue vecinos mas cercanos
                 LABEL = distancia_k(DATOENTRADA, DATOS, ETIQUETAS, INDICES, kvalue);
+                %si la etiqueta se corresponde a la verdadera sumamos 1
                 nTrue = nTrue + (LABEL == i);
             end;
             DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));

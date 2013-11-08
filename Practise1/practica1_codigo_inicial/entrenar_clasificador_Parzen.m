@@ -1,28 +1,16 @@
-function CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS, ETIQUETAS, DIVISIONES_HISTOGRAMA, HISTSIZE)
-%ENTRENAR_CLASIFICADOR_HIST2D Summary of this function goes here
+function CLASIFICADOR_PARZEN = entrenar_clasificador_Parzen( DATOS, ETIQUETAS, VALORES_H_EN_PARZEN )
+%ENTRENAR_CLASIFICADOR_PARZEN Summary of this function goes here
 %   Detailed explanation goes here
-
-% Entrena un clasificador de histograma con los datos de entrenamiento con el
-% objetivo de obtener el histograma que nos da mejor rendimiento
-
 YY         = unique(ETIQUETAS);
 NUM_CLASES = length(YY);
 
 NFOLD = 5;
 
-NPERCENTAGES = zeros(length(DIVISIONES_HISTOGRAMA),2);
+HPERCENTAGES = zeros(length(VALORES_H_EN_PARZEN),2);
 PERCENTAGES = zeros(1,NFOLD);
 
-aprioris = zeros(1,length(unique(ETIQUETAS)));
-
-
-for i = 1:NUM_CLASES
-    aprioris(i) = length(ETIQUETAS(ETIQUETAS==i))/length(ETIQUETAS);
-end;
-
-for ni=1:length(DIVISIONES_HISTOGRAMA)
-    N = DIVISIONES_HISTOGRAMA(ni);
-    
+for hi=1:length(VALORES_H_EN_PARZEN)    
+    hvalue = VALORES_H_EN_PARZEN(hi);
     nTrue = 0;
     
     %escogemos los datos aleatoriamente para hacer el n-fold
@@ -33,8 +21,6 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
         DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
     end;
     
-    
-    NFOLD = 5;
     for j = 1:NFOLD
         lengthMeanByClass = length(DATOS)/NUM_CLASES;
         lengthMeanByClassByFold = lengthMeanByClass/NFOLD;
@@ -58,21 +44,16 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
             DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
         end;
         
-        %crear el histogroama de etiquetas
-        hist = crearHistEtiquetas(DATOS,  ETIQUETAS, trainIndexes, N, aprioris, HISTSIZE);
         
         %Evaluar los datos de test
         for i=1:NUM_CLASES
             DATOSCLASE = DATOS(ETIQUETAS==i,:);
-            
             NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
-                histsize.minvalue = HISTSIZE.minvalue;
-                histsize.maxvalue = HISTSIZE.maxvalue;                
-                %miramos donde cae el dato de test dentro del histograma
-                %recientemente construido
-                LABEL = histograma_N(DATOENTRADA, hist,N, histsize);
+                INDICES = trainIndexes;
+                %devolvemos la equiqueta de los kvalue vecinos mas cercanos
+                LABEL = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue);
                 %si la etiqueta se corresponde a la verdadera sumamos 1
                 nTrue = nTrue + (LABEL == i);
             end;
@@ -83,37 +64,14 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
     end;
     %we take the max percentage of the n-fold
     MEANPERCENTAGE = mean(PERCENTAGES);
-    NPERCENTAGES(ni,:) = [MEANPERCENTAGE, N];
+    HPERCENTAGES(hi,:) = [MEANPERCENTAGE, hvalue];
 end;
-NPERCENTAGES
+HPERCENTAGES
 figure;
-plot(NPERCENTAGES(:,2), NPERCENTAGES(:,1));
-[mNPerc, nNPerc] = max(NPERCENTAGES(:,1));
-CLASIFICADOR_HIST.NOPTIMA = NPERCENTAGES(nNPerc,2);
-
-%crear el histogroama de etiquetas par todos los datos
-lengthMeanByClass = length(DATOS)/NUM_CLASES;
-TODOSLOSINDICES = zeros(NUM_CLASES, lengthMeanByClass);
-for i = 1:NUM_CLASES        
-    DATOSCLASE = DATOS(ETIQUETAS == i,:);
-    %usar todos los datos del clasificador para crear el histograma
-    TODOSLOSINDICES(i,:) = 1:length(DATOSCLASE);
-end;
-hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES, CLASIFICADOR_HIST.NOPTIMA, aprioris, HISTSIZE);
-
-%Crear histograma con todos los datos
-CLASIFICADOR_HIST.hist = hist;
-CLASIFICADOR_HIST.HISTSIZE.minvalue = 0;
-CLASIFICADOR_HIST.HISTSIZE.maxvalue = 50;
-
-%CLASIFICADOR_HIST{1}.binsize = 0;
-%CLASIFICADOR_HIST{1}.minbin = 0;
-%CLASIFICADOR_HIST{1}.maxbin = 0;
-%CLASIFICADOR_HIST{2}.binsize = 0;
-%CLASIFICADOR_HIST{2}.minbin = 0;
-%CLASIFICADOR_HIST{2}.maxbin = 0;
-%CLASIFICADOR_HIST{3}.binsize = 0;
-%CLASIFICADOR_HIST{3}.minbin = 0;
-%CLASIFICADOR_HIST{3}.maxbin = 0;
+plot(HPERCENTAGES(:,2), HPERCENTAGES(:,1));
+[mHPerc, nHPerc] = max(HPERCENTAGES(:,1));
+CLASIFICADOR_PARZEN.HOPTIMA = HPERCENTAGES(nHPerc,2);
+CLASIFICADOR_PARZEN.DATOS = DATOS;
+CLASIFICADOR_PARZEN.ETIQUETAS = ETIQUETAS;
 end
 
