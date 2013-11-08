@@ -1,11 +1,11 @@
-function hist = crearHistEtiquetas( DATOS,  ETIQUETAS, trainIndexes, N, aprioris)
+function hist = crearHistEtiquetas( DATOS,  ETIQUETAS, trainIndexes, N, aprioris, HISTSIZE)
 %CREARHISTETIQUETAS Summary of this function goes here
 %   Detailed explanation goes here
 
 %Crear histograma de los datos de entrenamiento
 histClase(:,:,3) = zeros(N,N);%histogramas por clase
-minvalue = 0;
-maxvalue = 50;%CAMBIAR----
+minvalue = HISTSIZE.minvalue;
+maxvalue = HISTSIZE.maxvalue;
 rangobin = maxvalue - minvalue;
 
 

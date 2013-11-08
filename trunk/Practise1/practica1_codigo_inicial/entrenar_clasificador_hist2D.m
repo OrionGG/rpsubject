@@ -1,4 +1,4 @@
-function CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS, ETIQUETAS, DIVISIONES_HISTOGRAMA);
+function CLASIFICADOR_HIST = entrenar_clasificador_hist2D(DATOS, ETIQUETAS, DIVISIONES_HISTOGRAMA, HISTSIZE)
 %ENTRENAR_CLASIFICADOR_HIST2D Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -56,7 +56,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
         end;
         
         %crear el histogroama de etiquetas
-        hist = crearHistEtiquetas(DATOS,  ETIQUETAS, trainIndexes, N, aprioris);
+        hist = crearHistEtiquetas(DATOS,  ETIQUETAS, trainIndexes, N, aprioris, HISTSIZE);
         
         %Evaluar los datos de test
         for i=1:NUM_CLASES
@@ -65,8 +65,8 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
             NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
-                histsize.minvalue = 0;
-                histsize.maxvalue = 50;
+                histsize.minvalue = HISTSIZE.minvalue;
+                histsize.maxvalue = HISTSIZE.maxvalue;
                 LABEL = histograma_N(DATOENTRADA, hist,N, histsize);
                 nTrue = nTrue + (LABEL == i);
             end;
@@ -92,7 +92,7 @@ for i = 1:NUM_CLASES
     %usar todos los datos del clasificador para crear el histograma
     TODOSLOSINDICES(i,:) = 1:length(DATOSCLASE);
 end;
-hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES, CLASIFICADOR_HIST.NOPTIMA, aprioris);
+hist = crearHistEtiquetas(DATOS,  ETIQUETAS, TODOSLOSINDICES, CLASIFICADOR_HIST.NOPTIMA, aprioris, HISTSIZE);
 
 %Crear histograma con todos los datos
 CLASIFICADOR_HIST.hist = hist;
