@@ -6,12 +6,12 @@ NUM_CLASES = length(YY);
 
 NFOLD = 5;
 
-HPERCENTAGES = zeros(length(VALORES_H_EN_PARZEN),2);
+HPERCENTAGES = zeros(length(VALORES_H_EN_PARZEN),3);
 PERCENTAGES = zeros(1,NFOLD);
+PRODPROBFUNCTIONS = zeros(1,NFOLD);
 
 for hi=1:length(VALORES_H_EN_PARZEN)    
     hvalue = VALORES_H_EN_PARZEN(hi);
-    nTrue = 0;
     
     %escogemos los datos aleatoriamente para hacer el n-fold
     randpermClases = zeros(NUM_CLASES,length(DATOS)/NUM_CLASES);
@@ -22,6 +22,8 @@ for hi=1:length(VALORES_H_EN_PARZEN)
     end;
     
     for j = 1:NFOLD
+        nTrue = 0;
+        fnhTotal = 1;
         lengthMeanByClass = length(DATOS)/NUM_CLASES;
         lengthMeanByClassByFold = lengthMeanByClass/NFOLD;
         
@@ -53,24 +55,40 @@ for hi=1:length(VALORES_H_EN_PARZEN)
                 DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
                 INDICES = trainIndexes;
                 %devolvemos la equiqueta de los kvalue vecinos mas cercanos
-                LABEL = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue);
+                [LABEL, fnh] = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue);
                 %si la etiqueta se corresponde a la verdadera sumamos 1
-                nTrue = nTrue + (LABEL == i);
+                if(LABEL == i)
+                    nTrue = nTrue + (LABEL == i);
+                    fnhTotal = fnhTotal * fnh;
+                end;
             end;
             DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
         end;
         PERCENTAGES(j) = nTrue/(NUM_CLASES * (length(DATOSCLASE)/NFOLD));
+        %PRODPROBFUNCTIONS(j) = fnhTotal;
         nTrue = 0;
+        %fnhTotal = 1;
     end;
     %we take the max percentage of the n-fold
     MEANPERCENTAGE = mean(PERCENTAGES);
-    HPERCENTAGES(hi,:) = [MEANPERCENTAGE, hvalue];
+    %MEANPRODPROBFUNCTIONS = mean(PRODPROBFUNCTIONS);
+    PRODPROBFUNCTIONS = fnhTotal;
+    fnhTotal = 1;
+    HPERCENTAGES(hi,:) = [MEANPERCENTAGE, hvalue, PRODPROBFUNCTIONS];
 end;
 HPERCENTAGES
 figure;
 plot(HPERCENTAGES(:,2), HPERCENTAGES(:,1));
-[mHPerc, nHPerc] = max(HPERCENTAGES(:,1));
-CLASIFICADOR_PARZEN.HOPTIMA = HPERCENTAGES(nHPerc,2);
+figure;
+plot(HPERCENTAGES(:,2), HPERCENTAGES(:,3));
+[mHPercSort, nHPercSort] = sort(HPERCENTAGES(:,1), 'descend');
+if(1 < length(mHPercSort) && mHPercSort(1) == mHPercSort(2))
+    BESTSH = HPERCENTAGES(HPERCENTAGES(:,1) == mHPercSort(1),:);
+    [mHPerc, nHPerc] = max(BESTSH(:,3));
+    CLASIFICADOR_PARZEN.HOPTIMA = BESTSH(nHPerc,2);
+else
+    CLASIFICADOR_PARZEN.HOPTIMA = HPERCENTAGES(nHPercSort,2);
+end;
 CLASIFICADOR_PARZEN.DATOS = DATOS;
 CLASIFICADOR_PARZEN.ETIQUETAS = ETIQUETAS;
 end

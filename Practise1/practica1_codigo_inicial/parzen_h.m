@@ -1,4 +1,4 @@
-function LABEL = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue)
+function [LABEL, fnh] = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue)
 %PARZEN_H Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -10,29 +10,33 @@ function LABEL = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue)
 
 NUMTRAININGCLASES = r;
 f = zeros(1,NUMTRAININGCLASES);
+fn = zeros(1,NUMTRAININGCLASES);
 dist = ones(1,NUMTRAININGCLASES)*bitmax;
 
 for i = 1:NUMTRAININGCLASES
     DATOSCLASE = DATOS(ETIQUETAS==i,:);
     NUMINDICESCLASE = length(INDICES(i,:));
-
+    
+    COV = cov(DATOSCLASE);
+    
     for j = 1:NUMINDICESCLASE
-        u = norm(DATOENTRADA - DATOSCLASE(INDICES(i,j),:))/hvalue;
-        if(abs(u)<=1/2)
-            f(i) = f(i)+1;
-            dist(i) = dist(i)+ (u*hvalue);
-        end;
+        %         Primera aproximación
+        %         u = norm(DATOENTRADA - DATOSCLASE(INDICES(i,j),:))/hvalue;
+        %         if(abs(u)<=1/2)
+        %             f(i) = f(i)+1;
+        %             dist(i) = dist(i)+ (u*hvalue);
+        %         end;
+        fn(i) = fn(i) + mvnpdf(DATOENTRADA/hvalue,DATOSCLASE(INDICES(i,j),:)/hvalue,COV);
     end;
 end;
-[m, n] = sort(f,'descend');
-if(1 < length(m) && m(1) == m(2))
-    % En caso de empate nos quedamos con la etiqueta de menor distancia    
-    [m, n] = min(dist);    
-    LABEL = n(1);
-else
-    % Devolvemos la etiqueta de la clase con mayor cuenta
-    LABEL = n(1);
-end;
+%[m, n] = sort(f,'descend');
+[m, n] = sort(fn,'descend');
 
+% Devolvemos la etiqueta de la clase con mayor cuenta
+LABEL = n(1);
+% Devolvemos tambien el valor de la funcion de probabilidad en ese punto
+[ndatos,d] = size(DATOSCLASE);
+fnh = 1/(ndatos*(hvalue^d))*m(1);
+%fnh = m(1);
 end
 
