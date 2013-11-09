@@ -9,9 +9,9 @@ function [LABEL, fnh] = parzen_h(DATOENTRADA, DATOS, ETIQUETAS, INDICES, hvalue)
 [r, c] = size(INDICES);
 
 NUMTRAININGCLASES = r;
-f = zeros(1,NUMTRAININGCLASES);
+%f = zeros(1,NUMTRAININGCLASES);
+%dist = ones(1,NUMTRAININGCLASES)*bitmax;
 fn = zeros(1,NUMTRAININGCLASES);
-dist = ones(1,NUMTRAININGCLASES)*bitmax;
 
 for i = 1:NUMTRAININGCLASES
     DATOSCLASE = DATOS(ETIQUETAS==i,:);
@@ -26,6 +26,7 @@ for i = 1:NUMTRAININGCLASES
         %             f(i) = f(i)+1;
         %             dist(i) = dist(i)+ (u*hvalue);
         %         end;
+        %Aproximación con una gausiana normal
         fn(i) = fn(i) + mvnpdf(DATOENTRADA/hvalue,DATOSCLASE(INDICES(i,j),:)/hvalue,COV);
     end;
 end;
