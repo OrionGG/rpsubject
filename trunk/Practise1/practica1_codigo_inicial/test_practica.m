@@ -13,7 +13,7 @@ CONJUNTO_GAUSSIANAS = 1;
 
 NUM_DATOS_ENTRENA_POR_CLASE   = [50, 200, 1000];
 NUM_DATOS_TEST_POR_CLASE      = 100;
-VALORES_H_EN_PARZEN           = 0.2:0.2:2;
+VALORES_H_EN_PARZEN           = [0.5, 1, 2];
 %VALORES_K_EN_KNN              = [1, 5, 11, 21, 31];
 VALORES_K_EN_KNN              = [1, 3, 5, 7, 11, 13, 17, 19, 21, 23, 29, 31];
 %DIVISIONES_HISTOGRAMA         = [3, 5, 10, 20, 30];
@@ -71,10 +71,10 @@ for i=1:length(NUM_DATOS_ENTRENA_POR_CLASE)
     figure(nfigure);
     subplot(2, 3, 4);
     ETIQUETAS_KNN = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
-    [Error_PARZEN, MatrizConfusion_PARZEN] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_KNN);
+    [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_KNN);
     toc
-    Error_PARZEN
-    MatrizConfusion_PARZEN
+    Error_KNN
+    MatrizConfusion_KNN
     sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA)
     %
     %   %------------------------------------------------------------------------
