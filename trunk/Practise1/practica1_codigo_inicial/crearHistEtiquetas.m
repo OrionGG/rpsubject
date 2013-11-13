@@ -46,36 +46,36 @@ for i=1:NUM_CLASES
     DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
 end;
 hist=zeros(N,N);%histograma de etiquetas usando los apriori
-histZeros = [];
+histTie = [];
 for ii=1:size(hist,1)
     for jj = 1:size(hist,2)
-        maxEtiqueta = randperm(3,1);    %maxEtiqueta = 0;
-        maxValue = 0;                   %maxValue = -1;
-        for ixClase = 1:size(histClase,3)
-            if(maxValue < (histClase(ii,jj,ixClase)*aprioris(ixClase)))
-                maxEtiqueta = ixClase;
-                maxValue = histClase(ii,jj,ixClase)*aprioris(ixClase);
-            end;
-        end;
-        if(maxValue == 0)
-            histZeros = [histZeros; ii , jj];
+        histValues = zeros(1,size(histClase,3));
+         for ixClase = 1:size(histClase,3)
+             histValues(ixClase) = histClase(ii,jj,ixClase)*aprioris(ixClase);
+         end;
+        
+        [histValues, histEtiquetas] = sort(histValues, 'descend');
+        if(histValues(1) == histValues(2))
+            histTie = [histTie; ii , jj];
             hist(ii,jj) = 0;
         else            
-            hist(ii,jj) = maxEtiqueta;
+            hist(ii,jj) = histEtiquetas(1);
         end;
     end;
 end;
-for iii = 1:size(histZeros, 1)
-    cellsZero = histZeros(iii,:);
+
+%caso de que la probabilidad sea la misma para 2 o más clases
+for iii = 1:size(histTie, 1)
+    cellsTie = histTie(iii,:);
     
     windowsSize = 3;
-    iStart = floor(cellsZero(1) - windowsSize/2);
+    iStart = floor(cellsTie(1) - windowsSize/2);
     if(iStart < 1) iStart=1; end;
-    iEnd = floor(cellsZero(1) + windowsSize/2);
+    iEnd = floor(cellsTie(1) + windowsSize/2);
     if(iEnd >  size(hist,1)) iEnd=size(hist,1); end;
-    jStart = floor(cellsZero(2) - windowsSize/2);
+    jStart = floor(cellsTie(2) - windowsSize/2);
     if(jStart < 1) jStart=1;  end;
-    jEnd = floor(cellsZero(2) + windowsSize/2);
+    jEnd = floor(cellsTie(2) + windowsSize/2);
     if(jEnd > size(hist,2)) jEnd = size(hist,2);  end;
     
     histCount = zeros(1, size(histClase,3));
@@ -89,7 +89,7 @@ for iii = 1:size(histZeros, 1)
     
     [hCMax, hCMaxIdx] = max(histCount);
     if(hCMax)
-        hist(cellsZero(1),cellsZero(2)) = hCMaxIdx;
+        hist(cellsTie(1),cellsTie(2)) = hCMaxIdx;
     end;
 end;
 end
