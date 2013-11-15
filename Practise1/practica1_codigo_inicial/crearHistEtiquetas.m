@@ -67,7 +67,7 @@ end;
 %caso de que la probabilidad sea la misma para 2 o más clases
 for iii = 1:size(histTie, 1)
     cellsTie = histTie(iii,:);
-    
+    %se mira en las celdas vecinas
     windowsSize = 3;
     iStart = floor(cellsTie(1) - windowsSize/2);
     if(iStart < 1) iStart=1; end;
