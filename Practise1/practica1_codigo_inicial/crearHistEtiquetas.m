@@ -64,33 +64,50 @@ for ii=1:size(hist,1)
     end;
 end;
 
+histCopy = hist;
 %caso de que la probabilidad sea la misma para 2 o más clases
 for iii = 1:size(histTie, 1)
     cellsTie = histTie(iii,:);
-    %se mira en las celdas vecinas
+    %el tamaño de ventana de buscar los vecinos se va ajustando para
+    %encontrar uan etiqueta mayoritaria
     windowsSize = 3;
-    iStart = floor(cellsTie(1) - windowsSize/2);
-    if(iStart < 1) iStart=1; end;
-    iEnd = floor(cellsTie(1) + windowsSize/2);
-    if(iEnd >  size(hist,1)) iEnd=size(hist,1); end;
-    jStart = floor(cellsTie(2) - windowsSize/2);
-    if(jStart < 1) jStart=1;  end;
-    jEnd = floor(cellsTie(2) + windowsSize/2);
-    if(jEnd > size(hist,2)) jEnd = size(hist,2);  end;
-    
-    histCount = zeros(1, size(histClase,3));
-    for iiii = iStart:iEnd
-        for jjjj = jStart:jEnd
-            if(hist(iiii,jjjj) ~= 0)
-                histCount(hist(iiii,jjjj)) = histCount(hist(iiii,jjjj))+1;
+    maxClassFound = 0;
+    while (windowsSize <= min(size(histCopy,1), size(histCopy,1)) && maxClassFound == 0)
+
+        %se mira en las celdas vecinas
+        iStart = cellsTie(1) - floor(windowsSize/2);
+        if(iStart < 1) iStart=1; end;
+        iEnd = cellsTie(1) + floor(windowsSize/2);
+        if(iEnd >  size(histCopy,1)) iEnd=size(histCopy,1); end;
+        jStart = cellsTie(2) - floor(windowsSize/2);
+        if(jStart < 1) jStart=1;  end;
+        jEnd = cellsTie(2) + floor(windowsSize/2);
+        if(jEnd > size(histCopy,2)) jEnd = size(histCopy,2);  end;
+
+        histCount = zeros(1, size(histClase,3));
+        for iiii = iStart:iEnd
+            for jjjj = jStart:jEnd
+                if(histCopy(iiii,jjjj) ~= 0)
+                    histCount(histCopy(iiii,jjjj)) = histCount(histCopy(iiii,jjjj))+1;
+                end;
             end;
         end;
+
+        [hCMax, hCMaxIdx] = sort(histCount, 'descend');
+        if(hCMax(1) ~= hCMax(2))
+            hist(cellsTie(1),cellsTie(2)) = hCMaxIdx(1);
+            maxClassFound = 1;
+        end;
+        
+        windowsSize = windowsSize+1;
     end;
     
-    [hCMax, hCMaxIdx] = max(histCount);
-    if(hCMax)
-        hist(cellsTie(1),cellsTie(2)) = hCMaxIdx;
+    %si no se encuentra ninguna etiqueta mayoritaria se asigna una
+    %cualquiera
+    if(hist(cellsTie(1),cellsTie(2)) == 0)
+        hist(cellsTie(1),cellsTie(2)) = hCMaxIdx(1);
     end;
+    
 end;
 end
 
