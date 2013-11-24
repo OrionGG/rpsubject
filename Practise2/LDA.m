@@ -35,17 +35,17 @@ v=invSw*Sb;
 % find eigne values and eigen vectors of the (v)
 [evec,eval]=eig(v);
 
-% Sort eigen vectors according to eigen values (descending order)
-[evecSort, evecSortIdx]= sort(diag(eval), 'descend');
+% Sort eigen vectors according to eigen values (ascending order)
+[evecSort, evecSortIdx]= sort(diag(eval), 'ascend');
 % neglect eigen vectors according to small eigen values
 if lengthy-1 < size(evec,2)
-    % we take the c-1 eigen vectors with greater eigen values
-    evecSortIdxSub = evecSortIdx(1:lengthy-1);
-    % we sort the indexes to get de eigen vector with columns in the same
-    % order
-    evecSortIdxSubSort = sort(evecSortIdxSub);    
+    % we take the n-(c-1) eigen vectors with smaller eigen values
+    featuresToDelete = (size(evec,2) - (lengthy-1));
+    evecSortIdxSub = evecSortIdx(1:featuresToDelete);
     
-    evec = evec(:, evecSortIdxSubSort);
+    % we delete them from eigen vector
+    
+    evec(:, evecSortIdxSub) = [];
 end
 
 A=evec;
