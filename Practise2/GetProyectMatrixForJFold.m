@@ -1,4 +1,4 @@
-function [ A, dataTest, dataTrain ] = GetProyectMatrixForJFold(j, randpermClases, X, LABELS, NFOLD)
+function [ A, dataTest, dataTrainByClass ] = GetProyectMatrixForJFold(j, randpermClases, X, LABELS, NFOLD)
 %GETPROYECTMATRIXFORIFOLD Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -23,7 +23,8 @@ for i=1:CLASSNUMBER
     
     %dataTest = [dataTest; DATAOFCLASS(testIndexes{i},:)];
     dataTest{i} = DATAOFCLASS(testIndexes{i},:);
-    dataTrain = [dataTrain; DATAOFCLASS(trainIndexes{i},:)];
+    dataTrainByClass{i} = DATAOFCLASS(trainIndexes{i},:);
+    dataTrain = [dataTrain; dataTrainByClass{i}];
     
     LABELCLASS = LABELS(LABELS==i);
     labelsTrain = [labelsTrain; LABELCLASS(trainIndexes{i})];
