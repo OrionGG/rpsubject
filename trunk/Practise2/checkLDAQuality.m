@@ -23,7 +23,7 @@ end;
 
 for j = 1:NFOLD
     
-    [A, dataTest, dataTrain] = GetProyectMatrixForJFold(j, randpermClases, X, LABELS, NFOLD);
+    [A, dataTest, dataTrainByClass] = GetProyectMatrixForJFold(j, randpermClases, X, LABELS, NFOLD);
     
     figure
     COLORES{1} = [255; 0; 0];
