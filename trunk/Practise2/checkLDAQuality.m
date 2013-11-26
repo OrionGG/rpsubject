@@ -23,7 +23,7 @@ end;
 
 for j = 1:NFOLD
     
-    [A, dataTest, dataTrainByClass] = GetProyectMatrixForJFold(j, randpermClases, X, LABELS, NFOLD);
+    [proyectionTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
     
     figure
     COLORES{1} = [255; 0; 0];
@@ -32,14 +32,13 @@ for j = 1:NFOLD
     COLORES{4} = [0; 0; 0];
     
     for i=1:CLASSNUMBER
-        proyection{i} = dataTest{i}*A;
         
         color    = COLORES{i};
         r        = color(1)/255;
         g        = color(2)/255;
         b        = color(3)/255;
         
-        plot3(proyection{i}(:,1), proyection{i}(:,2), proyection{i}(:,3), 'x', 'Color', [r,g,b] );
+        plot3(proyectionTest{i}(:,1), proyectionTest{i}(:,2), proyectionTest{i}(:,3), 'x', 'Color', [r,g,b] );
         hold on;
     end;
     grid on

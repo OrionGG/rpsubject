@@ -5,6 +5,9 @@ function Practise2
 %y = [1;1;2;2;3;3];
 
 [X, LABELS]= LoadImages;
+
+TestLDA(X, LABELS);
+
 checkLDAQuality(X, LABELS);
     
 A = LDA(X,LABELS);
