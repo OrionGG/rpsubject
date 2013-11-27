@@ -64,7 +64,7 @@ for ni=1:length(DIVISIONES_HISTOGRAMA)
             
             NUMTESTDATACLASS = length(testIndexes);
             for ixTestDataClass = 1:NUMTESTDATACLASS
-                DATOENTRADA =DATOSCLASE(testIndexes(i,ixTestDataClass),:);
+                DATOENTRADA =DATOSCLASE(testIndexes{i}(ixTestDataClass));
                 histsize.minvalue = HISTSIZE.minvalue;
                 histsize.maxvalue = HISTSIZE.maxvalue;
                 %miramos donde cae el dato de test dentro del histograma

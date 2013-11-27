@@ -3,14 +3,23 @@ function hist = crearHistEtiquetas( DATOS,  ETIQUETAS, trainIndexes, N, aprioris
 %   Detailed explanation goes here
 
 %Crear histograma de los datos de entrenamiento
-histClase(:,:,3) = zeros(N,N);%histogramas por clase
+YY         = unique(ETIQUETAS);
+NUM_CLASES = length(YY);
+featuresNumber = size(DATOS,2);
+
+NArray = [];
+for k = 1:featuresNumber
+    NArray = [NArray, N];
+end;
+NNUM_CLASESArray = [NArray, NUM_CLASES];
+
+histClase = zeros(NNUM_CLASESArray);
+
 minvalue = HISTSIZE.minvalue;
 maxvalue = HISTSIZE.maxvalue;
 rangobin = maxvalue - minvalue;
 
 
-YY         = unique(ETIQUETAS);
-NUM_CLASES = length(YY);
 
 for i=1:NUM_CLASES
     DATOSCLASE = DATOS(ETIQUETAS==i,:);
@@ -19,6 +28,7 @@ for i=1:NUM_CLASES
         DATOENTRADA = DATOSCLASE(trainIndexes{i}(ixTrainDataClass),:);
         
         xn = zeros(1, length(DATOENTRADA));
+        xni = 0;
         for j = 1:length(DATOENTRADA)
             xi = DATOENTRADA(j);
             %menores del minimo se ponen en el primer rango y mayores en el último
@@ -30,14 +40,14 @@ for i=1:NUM_CLASES
                     xn(j) = ceil(xi/(rangobin/N));
                 end;
             end;
-        end;       
-        
-        histClase(xn,i)=histClase(xn,i)+1;
+            xni = xni + xn * (length(DATOENTRADA)^(j-1));
+        end;   
+        histClase(xni)=histClase(xni)+1;
     end;
     
     DATOSCLASE = zeros(size(DATOSCLASE,1),size(DATOSCLASE,2));
 end;
-hist=zeros(N,N);%histograma de etiquetas usando los apriori
+hist=zeros(NArray);%histograma de etiquetas usando los apriori
 histTie = [];
 for ii=1:size(hist,1)
     for jj = 1:size(hist,2)
