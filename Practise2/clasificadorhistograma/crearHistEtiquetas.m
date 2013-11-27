@@ -28,20 +28,22 @@ for i=1:NUM_CLASES
         DATOENTRADA = DATOSCLASE(trainIndexes{i}(ixTrainDataClass),:);
         
         xn = zeros(1, length(DATOENTRADA));
-        xni = 0;
+        xni = 1;
         for j = 1:length(DATOENTRADA)
             xi = DATOENTRADA(j);
             %menores del minimo se ponen en el primer rango y mayores en el último
             if(xi <= minvalue)
-                xn(j) = 1;
+                xn = 1;
             else if(xi > maxvalue)
-                    xn(j) = N;
+                    xn = N;
                 else
-                    xn(j) = ceil(xi/(rangobin/N));
+                    xn = ceil(xi/(rangobin/N));
                 end;
             end;
-            xni = xni + xn * (length(DATOENTRADA)^(j-1));
+            xni = xni + (xn-1) * (length(DATOENTRADA)^(j-1));
         end;   
+        
+        xni = xni + (i-1) * (length(DATOENTRADA)^length(DATOENTRADA));
         histClase(xni)=histClase(xni)+1;
     end;
     
