@@ -19,37 +19,36 @@ for i=1:CLASSNUMBER
 end;
 
 
-
+PERCENTAGESKNN = zeros(NFOLD,2);
 for j = 1:NFOLD
-    
+    %get a LDA proyection of the test data from the trining data
     [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
     dataTest = [];
     dataTrain = [];
     for i=1:CLASSNUMBER
         dataTest = [dataTest;proyectionTest{i}];
         dataTrain = [dataTrain;proyectionTrain{i}];
-    end;
-       
+    end; 
     %------------------------------------------------------------------------
-    % Pruebas con K-NN
+    % Clasification with K-NN
     %------------------------------------------------------------------------
-    
     VALORES_K_EN_KNN              = [2, 3, 5, 7, 11, 13, 17, 19, 21, 23, 29, 31];
     tic
-    CLASIFICADOR_KNN = entrenar_clasificador_knn(dataTrain, labelsTrain, VALORES_K_EN_KNN)
-    ETIQUETAS_KNN = knnclassify(dataTest, dataTrain, labelsTrain, CLASIFICADOR_KNN.KOPTIMA)
-    %ETIQUETAS_KNN = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
+    CLASIFICADOR_KNN = entrenar_clasificador_knn(dataTrain, labelsTrain, VALORES_K_EN_KNN);
+    ETIQUETAS_KNN = knnclassify(dataTest, dataTrain, labelsTrain, CLASIFICADOR_KNN.KOPTIMA);
     [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(labelsTest, ETIQUETAS_KNN);
     toc
     Error_KNN
     MatrizConfusion_KNN
     sprintf('K-NN - K = %d', CLASIFICADOR_KNN.KOPTIMA)
-    PERCENTAGESKNN(j) = 1 - Error_KNN;
+    PERCENTAGESKNN(j,1) = 1 - Error_KNN;
+    PERCENTAGESKNN(j,2) = j;
 end;
-
+% figure with the diferents results of the kfold
+figure;
+plot(PERCENTAGESKNN(:,2), PERCENTAGESKNN(:,1));
 %we take the mean percentage of the n-fold
-MEANPERCENTAGEHIST = mean(PERCENTAGESHIST)
-MEANPERCENTAGEKNN = mean(PERCENTAGESKNN)
+MEANPERCENTAGEKNN = mean(PERCENTAGESKNN(:,1))
 
 end
 
