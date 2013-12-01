@@ -23,7 +23,7 @@ end;
 
 for j = 1:NFOLD
     
-    [proyectionTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
+    [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
     
     figure
     COLORES{1} = [255; 0; 0];

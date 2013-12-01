@@ -22,31 +22,34 @@ end;
 
 for j = 1:NFOLD
     
-    [proyectionTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
+    [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
+    dataTest = [];
     dataTrain = [];
     for i=1:CLASSNUMBER
+        dataTest = [dataTest;proyectionTest{i}];
         dataTrain = [dataTrain;proyectionTrain{i}];
     end;
-        %
-    %   %------------------------------------------------------------------------
-    %   % Pruebas con histogramas 2-D
-    %   %------------------------------------------------------------------------
-    DIVISIONES_HISTOGRAMA         = 3:30;
+       
+    %------------------------------------------------------------------------
+    % Pruebas con K-NN
+    %------------------------------------------------------------------------
     
-    HISTSIZE.minvalue             = 0;
-    HISTSIZE.maxvalue             = 255;
+    VALORES_K_EN_KNN              = [2, 3, 5, 7, 11, 13, 17, 19, 21, 23, 29, 31];
     tic
-    CLASIFICADOR_HIST = entrenar_clasificador_hist(dataTrain, labelsTrain, DIVISIONES_HISTOGRAMA, HISTSIZE);
-    figure(nfigure);
-    subplot(2, 3, 5);
-    ETIQUETAS_HIST = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_HIST, @clasificar_hist, sprintf('Hist - %d datos - N = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_HIST.NOPTIMA));
-    [Error_HIST, MatrizConfusion_HIST] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQUETAS_HIST);
+    CLASIFICADOR_KNN = entrenar_clasificador_knn(dataTrain, labelsTrain, VALORES_K_EN_KNN)
+    ETIQUETAS_KNN = knnclassify(dataTest, dataTrain, labelsTrain, CLASIFICADOR_KNN.KOPTIMA)
+    %ETIQUETAS_KNN = dibujar_clasificacion(D, COLORES_CLASES, CLASIFICADOR_KNN, @clasificar_knn, sprintf('K-NN - %d datos - K = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_KNN.KOPTIMA));
+    [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(labelsTest, ETIQUETAS_KNN);
     toc
-    Error_HIST
-    MatrizConfusion_HIST
-    sprintf('Hist - %d datos - N = %d', NUM_DATOS_ENTRENA_POR_CLASE(i), CLASIFICADOR_HIST.NOPTIMA)
-    
+    Error_KNN
+    MatrizConfusion_KNN
+    sprintf('K-NN - K = %d', CLASIFICADOR_KNN.KOPTIMA)
+    PERCENTAGESKNN(j) = 1 - Error_KNN;
 end;
+
+%we take the mean percentage of the n-fold
+MEANPERCENTAGEHIST = mean(PERCENTAGESHIST)
+MEANPERCENTAGEKNN = mean(PERCENTAGESKNN)
 
 end
 

@@ -1,4 +1,4 @@
-function [ proyectionTest, proyectionTrain, labelsTrain ] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD)
+function [ proyectionTest, labelsTest, proyectionTrain, labelsTrain ] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD)
 %GETPROYECTMATRIXFORIFOLD Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,6 +9,7 @@ CLASSNUMBER = length(classLabels);
 dataTest = [];
 dataTrain = [];
 labelsTrain = [];
+labelsTest = [];
 
 % We select data randomly to do n-fold
 for i=1:CLASSNUMBER
@@ -28,6 +29,7 @@ for i=1:CLASSNUMBER
     
     LABELCLASS = LABELS(LABELS==i);
     labelsTrain = [labelsTrain; LABELCLASS(trainIndexes{i})];
+    labelsTest = [labelsTest; LABELCLASS(testIndexes{i})];
     %LABELCLASSTRAIN = ones(1,length(dataTrain))*i;
     
     
