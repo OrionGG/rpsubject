@@ -32,6 +32,7 @@ for j = 1:NFOLD
     COLORES{3} = [0; 0; 255];
     COLORES{4} = [0; 0; 0];
     
+    %figure with the test data in each color
     for i=1:CLASSNUMBER
         
         color    = COLORES{i};
@@ -47,5 +48,7 @@ for j = 1:NFOLD
     axis square
     hold off;
 end;
+
+checkSW(X, LABELS);
 end
 
