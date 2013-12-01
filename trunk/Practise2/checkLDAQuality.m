@@ -19,7 +19,8 @@ for i=1:CLASSNUMBER
     trainIndexes{i} = zeros(1, NumDataInClass - NumDataInTest);
 end;
 
-
+% Determine size of input data
+[m n] = size(X);
 
 for j = 1:NFOLD
     
@@ -40,6 +41,7 @@ for j = 1:NFOLD
         
         plot3(proyectionTest{i}(:,1), proyectionTest{i}(:,2), proyectionTest{i}(:,3), 'x', 'Color', [r,g,b] );
         hold on;
+       
     end;
     grid on
     axis square
