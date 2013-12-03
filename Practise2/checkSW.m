@@ -1,4 +1,4 @@
-function [ output_args ] = checkSW( X, LABELS)
+function checkSW( X, LABELS)
 %CHECKSW check if Sw is singular after doing LDA to data
 
 
