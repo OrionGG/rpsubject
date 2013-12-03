@@ -6,11 +6,16 @@ function Practise2
 
 [X, LABELS]= LoadImages;
 
-checkLDAQuality(X, LABELS);
+%checkLDAQuality(X, LABELS);
 
-TestLDA(X, LABELS);
-    
-A = LDA(X,LABELS);
+%TestLDA(X, LABELS);
+
+PCAPercentages = [70, 75, 80, 85, 90, 95];
+for i = 1: length(PCAPercentages)
+    PCAPercentage = PCAPercentages(i);
+    A = PCA(X, PCAPercentage);
+    XPCA = X * A;
+end;
 
 
 end
