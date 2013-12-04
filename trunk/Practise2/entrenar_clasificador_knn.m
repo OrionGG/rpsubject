@@ -16,7 +16,7 @@ for ki=1:length(VALORES_K_EN_KNN)
     
     indices = crossvalind('Kfold',ETIQUETAS,NFOLD);
     cp = classperf(ETIQUETAS);
-    for i = 1:10
+    for i = 1:NFOLD
         test = (indices == i); train = ~test;
         class = knnclassify(DATOS(test,:),DATOS(train,:),ETIQUETAS(train,:), kvalue);
         classperf(cp,class,test);
