@@ -10,14 +10,9 @@ function Practise2
 
 %TestLDA(X, LABELS);
 
-PCAPercentages = [70, 75, 80, 85, 90, 95];
+PCAPercentages = 65:3:92;
 TestPCA(X, LABELS, PCAPercentages);
 
-for i = 1: length(PCAPercentages)
-    PCAPercentage = PCAPercentages(i);
-    A = PCA(X, PCAPercentage);
-    XPCA = X * A;
-end;
 
 
 end
