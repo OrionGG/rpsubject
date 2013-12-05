@@ -19,6 +19,7 @@ for i=1:CLASSNUMBER
     trainIndexes{i} = zeros(1, NumDataInClass - NumDataInTest);
 end;
 
+MEANPERCENTAGEKNN = zeros(length(PCAPercentages),2);
 for pi=1:length(PCAPercentages)
     pvalue = PCAPercentages(pi);
     PERCENTAGESKNN = zeros(NFOLD,2);
@@ -53,8 +54,11 @@ for pi=1:length(PCAPercentages)
     figure;
     plot(PERCENTAGESKNN(:,2), PERCENTAGESKNN(:,1));
     %we take the mean percentage of the n-fold
-    MEANPERCENTAGEKNN = mean(PERCENTAGESKNN(:,1))
+    MEANPERCENTAGEKNN(pi,1) = mean(PERCENTAGESKNN(:,1));
+    MEANPERCENTAGEKNN(pi,2) = pvalue;
 end;
+figure;
+plot(MEANPERCENTAGEKNN(:,2), MEANPERCENTAGEKNN(:,1));
 
 end
 
