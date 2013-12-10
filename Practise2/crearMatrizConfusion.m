@@ -4,7 +4,7 @@ function [Error, MatrizConfusion] = crearMatrizConfusion(ETIQUETAS_REALES, ETIQU
 % Funcion para crear la matriz de confusión despues de clasificar los datos
 % con un determinado clasificador
 [m,n] = size(ETIQUETAS_REALES);
-NUM_CLASES = length(unique(ETIQUETAS_CLASIFICADOR));
+NUM_CLASES = length(unique(ETIQUETAS_REALES));
 
 falsePositives = 0;
 MatrizConfusion = zeros(NUM_CLASES, NUM_CLASES);

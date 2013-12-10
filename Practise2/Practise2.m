@@ -10,8 +10,10 @@ function Practise2
 
 %TestLDA(X, LABELS);
 
-PCAPercentages = 65:3:92;
-TestPCA(X, LABELS, PCAPercentages);
+iniFeatures = length(unique(LABELS));
+features = iniFeatures:size(X, 2)-1;
+TestPCA2(X, LABELS, features);
+TestPCA(X, LABELS, features);
 
 
 
