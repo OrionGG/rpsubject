@@ -1,4 +1,4 @@
-function [ output_args ] = TestPCA( X, LABELS, PCAPercentages)
+function [ output_args ] = TestPCA( X, LABELS, features)
 %TESTPDA Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -19,46 +19,55 @@ for i=1:CLASSNUMBER
     trainIndexes{i} = zeros(1, NumDataInClass - NumDataInTest);
 end;
 
-MEANPERCENTAGEKNN = zeros(length(PCAPercentages),2);
-for pi=1:length(PCAPercentages)
-    pvalue = PCAPercentages(pi);
+for di=1:length(features)
+    dvalue = features(di);
     PERCENTAGESKNN = zeros(NFOLD,2);
-    for j = 1:NFOLD
-        %get a PDA proyection of the test data from the trining data
-        [XPCA] = GetPCAProyectionsJFold(j, randpermClases, X, LABELS, pvalue, NFOLD);
-        
-        %get a LDA proyection of the test data from the trining data
-        [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, XPCA, LABELS, NFOLD);
-        dataTest = [];
-        dataTrain = [];
-        for i=1:CLASSNUMBER
-            dataTest = [dataTest;proyectionTest{i}];
-            dataTrain = [dataTrain;proyectionTrain{i}];
+    VALORES_K_EN_KNN              = primes(50);
+    MEANPERCENTAGEKNN = zeros(length(VALORES_K_EN_KNN),3);
+    for ki=1:length(VALORES_K_EN_KNN)
+        kvalue = VALORES_K_EN_KNN(ki);
+        for j = 1:NFOLD
+            %get a PDA proyection of the test data from the trining data
+            [XPCA] = GetPCAProyectionsJFold(j, randpermClases, X, LABELS, dvalue, NFOLD);
+            
+            %get a LDA proyection of the test data from the trining data
+            [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, XPCA, LABELS, NFOLD);
+            dataTest = [];
+            dataTrain = [];
+            for i=1:CLASSNUMBER
+                dataTest = [dataTest;proyectionTest{i}];
+                dataTrain = [dataTrain;proyectionTrain{i}];
+            end;
+            %------------------------------------------------------------------------
+            % Clasification with K-NN
+            %------------------------------------------------------------------------
+            VALORES_K_EN_KNN              = primes(50);
+            %tic
+            %%CLASIFICADOR_KNN = entrenar_clasificador_knn(dataTrain, labelsTrain, VALORES_K_EN_KNN);
+            ETIQUETAS_KNN = knnclassify(dataTest, dataTrain, labelsTrain, kvalue);
+            [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(labelsTest, ETIQUETAS_KNN);
+            %toc
+            %Error_KNN
+            %MatrizConfusion_KNN
+            %sprintf('K-NN - K = %d', CLASIFICADOR_KNN.KOPTIMA)
+            PERCENTAGESKNN(j,1) = 1 - Error_KNN;
+            PERCENTAGESKNN(j,2) = j;
         end;
-        %------------------------------------------------------------------------
-        % Clasification with K-NN
-        %------------------------------------------------------------------------
-        VALORES_K_EN_KNN              = [2, 3, 5, 7, 11, 13, 17, 19, 21, 23, 29, 31];
-        tic
-        CLASIFICADOR_KNN = entrenar_clasificador_knn(dataTrain, labelsTrain, VALORES_K_EN_KNN);
-        ETIQUETAS_KNN = knnclassify(dataTest, dataTrain, labelsTrain, CLASIFICADOR_KNN.KOPTIMA);
-        [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(labelsTest, ETIQUETAS_KNN);
-        toc
-        Error_KNN
-        MatrizConfusion_KNN
-        sprintf('K-NN - K = %d', CLASIFICADOR_KNN.KOPTIMA)
-        PERCENTAGESKNN(j,1) = 1 - Error_KNN;
-        PERCENTAGESKNN(j,2) = j;
+        %we take the mean percentage of the n-fold
+        meanPercentage = mean(PERCENTAGESKNN(:,1));
+        MEANPERCENTAGEKNN(ki,1) = meanPercentage;
+        MEANPERCENTAGEKNN(ki,2) = dvalue;
+        MEANPERCENTAGEKNN(ki,3) = kvalue;
+        sprintf('K-NN - K = %d, p = %.3f', kvalue, meanPercentage)
     end;
     % figure with the diferents results of the kfold
-    figure;
-    plot(PERCENTAGESKNN(:,2), PERCENTAGESKNN(:,1));
-    %we take the mean percentage of the n-fold
-    MEANPERCENTAGEKNN(pi,1) = mean(PERCENTAGESKNN(:,1));
-    MEANPERCENTAGEKNN(pi,2) = pvalue;
+    figure('Name', sprintf('DValue = %d ;K-NN - K = %d', dvalue,kvalue));
+    plot(MEANPERCENTAGEKNN(:,3), MEANPERCENTAGEKNN(:,1));
 end;
 figure;
 plot(MEANPERCENTAGEKNN(:,2), MEANPERCENTAGEKNN(:,1));
+figure;
+plot(MEANPERCENTAGEKNN(:,2), MEANPERCENTAGEKNN(:,3));
 
 end
 

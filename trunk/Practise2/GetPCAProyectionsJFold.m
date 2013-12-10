@@ -37,8 +37,9 @@ for i=1:CLASSNUMBER
     trainIndexes{i} = zeros(1, NumDataInClass - NumDataInTest);
 end;
 
-A = PCA(dataTrain,pvalue);
-XPCA = X * A;
+[A, meanX]  = PCA(dataTrain,pvalue);
+[m,n] = size(X);
+XPCA = (X - repmat(meanX, m,1)) * A;
 
 
 end
