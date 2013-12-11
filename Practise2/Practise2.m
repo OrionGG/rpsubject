@@ -9,12 +9,9 @@ function Practise2
 %checkLDAQuality(X, LABELS);
 
 %TestLDA(X, LABELS);
-
-iniFeatures = length(unique(LABELS));
-features = iniFeatures:size(X, 2)-1;
-TestPCA2(X, LABELS, features);
-TestPCA(X, LABELS, features);
-
+tic
+TestPCA2(X, LABELS);
+toc
 
 
 end
