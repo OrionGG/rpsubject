@@ -13,42 +13,42 @@ Xtrain  = cell(1,NFOLD);
 Ytrain  = cell(1,NFOLD);
 
 % We select data randomly to do n-fold
-for i=1:CLASSNUMBER
-    DATAOFCLASS = X(LABELS==i,:);
+for c=1:CLASSNUMBER
+    DATAOFCLASS = X(LABELS==c,:);
     NumDataInClass = size(DATAOFCLASS,1);
-    randpermClases{i} = randperm(NumDataInClass);
+    randpermClases{c} = randperm(NumDataInClass);
     
     NumDataInTest = round(NumDataInClass/NFOLD);
     
-    for j = 1:NFOLD
+    for f = 1:NFOLD
         
-        endTestIndexes = min(NumDataInClass, j * NumDataInTest);
-        FoldIndexes{j} = randpermClases{i}((1+((j-1)* NumDataInTest)):endTestIndexes);
-        Fold{j} = DATAOFCLASS(FoldIndexes{j},:);
+        endTestIndexes = min(NumDataInClass, f * NumDataInTest);
+        FoldIndexes{f} = randpermClases{c}((1+((f-1)* NumDataInTest)):endTestIndexes);
+        Fold{f} = DATAOFCLASS(FoldIndexes{f},:);
         
-        LABELCLASS = LABELS(LABELS==i);
-        FoldLabel{j} = LABELCLASS(FoldIndexes{j}, :);
+        LABELCLASS = LABELS(LABELS==c);
+        FoldLabel{f} = LABELCLASS(FoldIndexes{f}, :);
         
     end;
     
-    for j = 1:NFOLD
-        Xtest{j} = [Xtest{j};Fold{j}];
-        Ytest{j} = [Ytest{j};FoldLabel{j}];
-        for jb = 1:j-1
-            Xtrain{j}= [Xtrain{j}; Fold{jb}];
-            Ytrain{j}= [Ytrain{j}; FoldLabel{jb}];
+    for f = 1:NFOLD
+        Xtest{f} = [Xtest{f};Fold{f}];
+        Ytest{f} = [Ytest{f};FoldLabel{f}];
+        for jb = 1:f-1
+            Xtrain{f}= [Xtrain{f}; Fold{jb}];
+            Ytrain{f}= [Ytrain{f}; FoldLabel{jb}];
         end;
-        for ja = j+1:NFOLD
-            Xtrain{j}= [Xtrain{j}; Fold{ja}];
-            Ytrain{j}= [Ytrain{j}; FoldLabel{ja}];
+        for ja = f+1:NFOLD
+            Xtrain{f}= [Xtrain{f}; Fold{ja}];
+            Ytrain{f}= [Ytrain{f}; FoldLabel{ja}];
         end;
     end;
 end;
 
 P = cell(1,NFOLD);
 meanX = cell(1,NFOLD);
-for j = 1:NFOLD    
-    [P{j}, meanX{j}] = PCA(Xtrain{j});
+for f = 1:NFOLD    
+    [P{f}, meanX{f}] = PCA(Xtrain{f});
 end;
 
 end
