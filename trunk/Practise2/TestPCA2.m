@@ -1,4 +1,4 @@
-function [ output_args ] = TestPCA2( X, LABELS, features)
+function [ output_args ] = TestPCA2( X, LABELS)
 %TESTPCA2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,10 +6,16 @@ NFOLD = 10;
 [Xtest, Ytest,Xtrain, Ytrain, P, meanX] = PrepareDataPCA( X, LABELS, NFOLD );
 i = 1;
 
-dvalues = 1:size(X, 2)-1;
+classLabels = unique(LABELS);
+CLASSNUMBER = length(classLabels);
+%featuresMax = size(X, 2)-1;
+featuresMax = round((size(X, 2)-1)/5);
+interval = round((featuresMax-CLASSNUMBER)/9);
+
+dvalues = CLASSNUMBER:interval:featuresMax;
 kvalues = 1:10:41;
-MEANPERCENTAGEKFOLD = zeros(length(dvalues)*length(kvalues), 3);
-for di=1:length(dvalues) % Datos por columnas. Es el núm. de características
+MEANPERCENTAGEKFOLD = zeros(length(dvalues)*length(kvalues), 4);
+for di=1:length(dvalues) % Datos por filas. Es el núm. de características
     d = dvalues(di);
     for ki=1:length(kvalues)
         k = kvalues(ki);
@@ -30,12 +36,16 @@ for di=1:length(dvalues) % Datos por columnas. Es el núm. de características
             PERCENTAGESKFOLD(f,2) = f;
         end
         meanPercentage = mean(PERCENTAGESKFOLD(:,1));
-        meanPercentage
         MEANPERCENTAGEKFOLD(i,1) = meanPercentage;
         MEANPERCENTAGEKFOLD(i,2) = d;
         MEANPERCENTAGEKFOLD(i,3) = k;
+        MEANPERCENTAGEKFOLD(i,4) = i;
         i= i+1;
     end
 end
+figure;
+plot(MEANPERCENTAGEKFOLD(:,1));
+[B, IX] = sort(MEANPERCENTAGEKFOLD,1, 'descend');
+MEANPERCENTAGEKFOLD(IX(:,1),:)
 end
 
