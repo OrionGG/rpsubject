@@ -8,7 +8,7 @@ function Practise2
 
 %checkLDAQuality(X, LABELS);
 tic
-TestLDA2(X, LABELS);
+TestLDA(X, LABELS);
 toc
 tic
 %TestPCA(X, LABELS);
