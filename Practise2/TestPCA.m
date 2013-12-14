@@ -1,5 +1,5 @@
 function [ output_args ] = TestPCA( X, LABELS)
-%TESTPCA2 Summary of this function goes here
+%TESTPCA Summary of this function goes here
 %   Detailed explanation goes here
 
 NFOLD = 10;
