@@ -6,11 +6,11 @@ function Practise2
 
 [X, LABELS]= LoadImages;
 
-%checkLDAQuality(X, LABELS);
+checkLDAQuality(X, LABELS);
 
 %TestLDA(X, LABELS);
 tic
-TestPCA2(X, LABELS);
+TestPCA(X, LABELS);
 toc
 
 

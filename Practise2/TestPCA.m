@@ -1,73 +1,61 @@
-function [ output_args ] = TestPCA( X, LABELS, features)
-%TESTPDA Summary of this function goes here
+function [ output_args ] = TestPCA( X, LABELS)
+%TESTPCA2 Summary of this function goes here
 %   Detailed explanation goes here
 
 NFOLD = 10;
+[Xtest, Ytest,Xtrain, Ytrain, P, meanX] = PrepareDataPCA( X, LABELS, NFOLD );
 
-% Count class labels
+
 classLabels = unique(LABELS);
 CLASSNUMBER = length(classLabels);
+%featuresStart = CLASSNUMBER;
+%featuresStart = CLASSNUMBER + round(((size(X, 2)-1)/5)/10);
+%featuresEnd = size(X, 2)-1;
+%featuresEnd = round((size(X, 2)-1)/5);
+%interval = floor((featuresEnd-featuresStart)/39);
+featuresStart = 16;
+featuresEnd = 124;
+interval = 1;
 
-% We select data randomly to do n-fold
-for i=1:CLASSNUMBER
-    DATAOFCLASS = X(LABELS==i,:);
-    NumDataInClass = size(DATAOFCLASS,1);
-    randpermClases{i} = randperm(NumDataInClass);
-    
-    NumDataInTest = round(NumDataInClass/NFOLD);
-    testIndexes{i} = zeros(1, NumDataInTest);
-    trainIndexes{i} = zeros(1, NumDataInClass - NumDataInTest);
-end;
 
-for di=1:length(features)
-    dvalue = features(di);
-    PERCENTAGESKNN = zeros(NFOLD,2);
-    VALORES_K_EN_KNN              = primes(50);
-    MEANPERCENTAGEKNN = zeros(length(VALORES_K_EN_KNN),3);
-    for ki=1:length(VALORES_K_EN_KNN)
-        kvalue = VALORES_K_EN_KNN(ki);
-        for j = 1:NFOLD
-            %get a PDA proyection of the test data from the trining data
-            [XPCA] = GetPCAProyectionsJFold(j, randpermClases, X, LABELS, dvalue, NFOLD);
+dvalues = featuresStart:interval:featuresEnd;
+kvalues = 5:10:50;
+
+i = 1;
+MEANPERCENTAGEKFOLD = zeros(length(dvalues)*length(kvalues), 4);
+for di=1:length(dvalues) % Datos por filas. Es el núm. de características
+    d = dvalues(di);
+    for ki=1:length(kvalues)
+        k = kvalues(ki);
+        PERCENTAGESKFOLD = zeros(NFOLD,2);
+        % Vald. Cruzada 5 fold.
+        for f=1:NFOLD
+            X_test_pca = proyectarPCA(P{f}(:,1:d), meanX{f}, Xtest{f});
+            X_train_pca = proyectarPCA(P{f}(:,1:d), meanX{f}, Xtrain{f});
             
-            %get a LDA proyection of the test data from the trining data
-            [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, XPCA, LABELS, NFOLD);
-            dataTest = [];
-            dataTrain = [];
-            for i=1:CLASSNUMBER
-                dataTest = [dataTest;proyectionTest{i}];
-                dataTrain = [dataTrain;proyectionTrain{i}];
-            end;
-            %------------------------------------------------------------------------
-            % Clasification with K-NN
-            %------------------------------------------------------------------------
-            VALORES_K_EN_KNN              = primes(50);
-            %tic
-            %%CLASIFICADOR_KNN = entrenar_clasificador_knn(dataTrain, labelsTrain, VALORES_K_EN_KNN);
-            ETIQUETAS_KNN = knnclassify(dataTest, dataTrain, labelsTrain, kvalue);
-            [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(labelsTest, ETIQUETAS_KNN);
-            %toc
-            %Error_KNN
-            %MatrizConfusion_KNN
-            %sprintf('K-NN - K = %d', CLASIFICADOR_KNN.KOPTIMA)
-            PERCENTAGESKNN(j,1) = 1 - Error_KNN;
-            PERCENTAGESKNN(j,2) = j;
-        end;
-        %we take the mean percentage of the n-fold
-        meanPercentage = mean(PERCENTAGESKNN(:,1));
-        MEANPERCENTAGEKNN(ki,1) = meanPercentage;
-        MEANPERCENTAGEKNN(ki,2) = dvalue;
-        MEANPERCENTAGEKNN(ki,3) = kvalue;
-        sprintf('K-NN - K = %d, p = %.3f', kvalue, meanPercentage)
-    end;
-    % figure with the diferents results of the kfold
-    figure('Name', sprintf('DValue = %d ;K-NN - K = %d', dvalue,kvalue));
-    plot(MEANPERCENTAGEKNN(:,3), MEANPERCENTAGEKNN(:,1));
-end;
+            P_LDA = LDA(X_train_pca, Ytrain{f});
+            X_train_pca_lda = proyectarLDA(P_LDA, X_train_pca);
+            X_test_pca_lda  = proyectarLDA(P_LDA, X_test_pca);
+            
+            ETIQUETAS_KNN = knnclassify(X_test_pca_lda, X_train_pca_lda, Ytrain{f}, k);
+            [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(Ytest{f}, ETIQUETAS_KNN);
+            
+            PERCENTAGESKFOLD(f,1) = 1 - Error_KNN;
+            PERCENTAGESKFOLD(f,2) = f;
+        end
+        meanPercentage = mean(PERCENTAGESKFOLD(:,1));
+        MEANPERCENTAGEKFOLD(i,1) = meanPercentage;
+        MEANPERCENTAGEKFOLD(i,2) = d;
+        MEANPERCENTAGEKFOLD(i,3) = k;
+        MEANPERCENTAGEKFOLD(i,4) = i;
+        i= i+1;
+    end
+end
 figure;
-plot(MEANPERCENTAGEKNN(:,2), MEANPERCENTAGEKNN(:,1));
-figure;
-plot(MEANPERCENTAGEKNN(:,2), MEANPERCENTAGEKNN(:,3));
+plot(MEANPERCENTAGEKFOLD(:,1));
+[B, IX] = sort(MEANPERCENTAGEKFOLD,1, 'descend');
+MEANPERCENTAGEKFOLD(IX(:,1),:)
+%MEANPERCENTAGEKFOLD
 
 end
 
