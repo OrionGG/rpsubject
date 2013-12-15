@@ -28,7 +28,7 @@ for di=1:length(dvalues) % Datos por filas. Es el núm. de características
     for ki=1:length(kvalues)
         k = kvalues(ki);
         PERCENTAGESKFOLD = zeros(NFOLD,2);
-        % Vald. Cruzada 5 fold.
+        % Vald. Cruzada 10 fold.
         for f=1:NFOLD
             X_test_pca = proyectarPCA(P{f}(:,1:d), meanX{f}, Xtest{f});
             X_train_pca = proyectarPCA(P{f}(:,1:d), meanX{f}, Xtrain{f});
