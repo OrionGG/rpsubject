@@ -3,30 +3,20 @@ function checkLDAQuality( X, LABELS)
 %   Detailed explanation goes here
 
 NFOLD = 10;
+[Xtest, Ytest,Xtrain, Ytrain] = PrepareData( X, LABELS, NFOLD );
 
-% Count class labels
 classLabels = unique(LABELS);
 CLASSNUMBER = length(classLabels);
 
-% We select data randomly to do n-fold
-for i=1:CLASSNUMBER
-    DATAOFCLASS = X(LABELS==i,:);
-    NumDataInClass = size(DATAOFCLASS,1);
-    randpermClases{i} = randperm(NumDataInClass);
+rcond = zeros(NFOLD, 1);
+% Vald. Cruzada 10 fold.
+for f=1:NFOLD
     
-    NumDataInTest = round(NumDataInClass/NFOLD);
-    testIndexes{i} = zeros(1, NumDataInTest);
-    trainIndexes{i} = zeros(1, NumDataInClass - NumDataInTest);
-end;
-
-% Determine size of input data
-[m n] = size(X);
-
-for j = 1:NFOLD
-    
-    [proyectionTest, labelsTest, proyectionTrain, labelsTrain] = GetLDAProyectionsJFold(j, randpermClases, X, LABELS, NFOLD);
-    
-    figure
+    P_LDA = LDA(Xtrain{f}, Ytrain{f});
+    X_train_lda = proyectarLDA(P_LDA, Xtrain{f});
+    X_test_lda  = proyectarLDA(P_LDA, Xtest{f});
+   
+    figure;
     COLORES{1} = [255; 0; 0];
     COLORES{2} = [0; 255; 0];
     COLORES{3} = [0; 0; 255];
@@ -34,21 +24,27 @@ for j = 1:NFOLD
     
     %figure with the test data in each color
     for i=1:CLASSNUMBER
+        X_test_lda_class = [];
+        X_test_lda_class = X_test_lda(Ytest{f}==i,:);
         
         color    = COLORES{i};
         r        = color(1)/255;
         g        = color(2)/255;
         b        = color(3)/255;
         
-        plot3(proyectionTest{i}(:,1), proyectionTest{i}(:,2), proyectionTest{i}(:,3), 'x', 'Color', [r,g,b] );
+        plot3(X_test_lda_class(:,1), X_test_lda_class(:,2), X_test_lda_class(:,3), 'x', 'Color', [r,g,b] );
         hold on;
-       
+        
     end;
     grid on
     axis square
     hold off;
-end;
+    
+    
+    rcond(f) = checkSW(X_test_lda, Ytest{f});
+end
 
-checkSW(X, LABELS);
+mean(rcond, 1)
+
 end
 
