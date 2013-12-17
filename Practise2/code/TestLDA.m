@@ -4,7 +4,7 @@ function [ output_args ] = TestLDA( X, LABELS)
 
 kvalues = 5:10:105;
 
-iterationsEnd = 1;
+iterationsEnd = 10;
 results = zeros(length(kvalues), iterationsEnd+ 2);
 
 for iteration =1:iterationsEnd
