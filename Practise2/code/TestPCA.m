@@ -22,12 +22,13 @@ dvalues = featuresStart:interval:featuresEnd;
 kvalues = 5:10:50;
 
 i = 1;
-MEANPERCENTAGEKFOLD = zeros(length(dvalues)*length(kvalues), 4);
+MEANPERCENTAGEFOLD = zeros(length(dvalues)*length(kvalues), 4);
+PERCENTAGEK = zeros(length(kvalues),length(dvalues)+1);
 for di=1:length(dvalues) % Datos por filas. Es el núm. de características
     d = dvalues(di);
     for ki=1:length(kvalues)
         k = kvalues(ki);
-        PERCENTAGESKFOLD = zeros(NFOLD,2);
+        PERCENTAGESFOLD = zeros(NFOLD,2);
         % Vald. Cruzada 10 fold.
         for f=1:NFOLD
             X_test_pca = proyectarPCA(P{f}(:,1:d), meanX{f}, Xtest{f});
@@ -40,21 +41,27 @@ for di=1:length(dvalues) % Datos por filas. Es el núm. de características
             ETIQUETAS_KNN = knnclassify(X_test_pca_lda, X_train_pca_lda, Ytrain{f}, k);
             [Error_KNN, MatrizConfusion_KNN] = crearMatrizConfusion(Ytest{f}, ETIQUETAS_KNN);
             
-            PERCENTAGESKFOLD(f,1) = 1 - Error_KNN;
-            PERCENTAGESKFOLD(f,2) = f;
+            PERCENTAGESFOLD(f,1) = 1 - Error_KNN;
+            PERCENTAGESFOLD(f,2) = f;
+            
+            PERCENTAGEK(ki, di) = 1 - Error_KNN;
         end
-        meanPercentage = mean(PERCENTAGESKFOLD(:,1));
-        MEANPERCENTAGEKFOLD(i,1) = meanPercentage;
-        MEANPERCENTAGEKFOLD(i,2) = d;
-        MEANPERCENTAGEKFOLD(i,3) = k;
-        MEANPERCENTAGEKFOLD(i,4) = i;
+        meanPercentage = mean(PERCENTAGESFOLD(:,1));
+        MEANPERCENTAGEFOLD(i,1) = meanPercentage;
+        MEANPERCENTAGEFOLD(i,2) = d;
+        MEANPERCENTAGEFOLD(i,3) = k;
+        MEANPERCENTAGEFOLD(i,4) = i;
         i= i+1;
-    end
-end
+    end;
+end;
 figure;
-plot(MEANPERCENTAGEKFOLD(:,1));
-[B, IX] = sort(MEANPERCENTAGEKFOLD,1, 'descend');
-MEANPERCENTAGEKFOLD(IX(:,1),:)
+PERCENTAGEK(:,length(dvalues)+1) = mean(PERCENTAGEK(:, 1:length(dvalues)),2);
+plot(kvalues,PERCENTAGEK(:,length(dvalues)+1));
+
+figure;
+plot(MEANPERCENTAGEFOLD(:,1));
+[B, IX] = sort(MEANPERCENTAGEFOLD,1, 'descend');
+MEANPERCENTAGEFOLD(IX(:,1),:)
 %MEANPERCENTAGEKFOLD
 
 end
