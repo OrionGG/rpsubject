@@ -1,0 +1,1 @@
+Asignatura de Reconocimiento de Patrones
